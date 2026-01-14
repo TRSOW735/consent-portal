@@ -1,0 +1,105 @@
+-- CreateTable
+CREATE TABLE "Organization" (
+    "id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "name" TEXT NOT NULL,
+    "recipient" TEXT NOT NULL,
+    "rpcUrl" TEXT,
+
+    CONSTRAINT "Organization_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ApiKey" (
+    "id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "key" TEXT NOT NULL,
+    "revokedAt" TIMESTAMP(3),
+    "orgId" TEXT NOT NULL,
+
+    CONSTRAINT "ApiKey_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "PaymentRequest" (
+    "id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "recipient" TEXT NOT NULL,
+    "amount" TEXT NOT NULL,
+    "memo" TEXT,
+    "reference" TEXT NOT NULL,
+    "status" TEXT NOT NULL DEFAULT 'pending',
+    "signature" TEXT,
+    "orgId" TEXT,
+
+    CONSTRAINT "PaymentRequest_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "WebhookEndpoint" (
+    "id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "orgId" TEXT NOT NULL,
+    "url" TEXT NOT NULL,
+    "secret" TEXT NOT NULL,
+    "events" TEXT NOT NULL,
+    "enabled" BOOLEAN NOT NULL DEFAULT true,
+
+    CONSTRAINT "WebhookEndpoint_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "WebhookDelivery" (
+    "id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "orgId" TEXT NOT NULL,
+    "endpointId" TEXT NOT NULL,
+    "event" TEXT NOT NULL,
+    "paymentRef" TEXT NOT NULL,
+    "payloadJson" TEXT NOT NULL,
+    "status" TEXT NOT NULL DEFAULT 'pending',
+    "attemptCount" INTEGER NOT NULL DEFAULT 0,
+    "nextAttemptAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "lastStatus" INTEGER,
+    "lastError" TEXT,
+    "lastResponse" TEXT,
+    "deliveredAt" TIMESTAMP(3),
+
+    CONSTRAINT "WebhookDelivery_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ApiKey_key_key" ON "ApiKey"("key");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "PaymentRequest_reference_key" ON "PaymentRequest"("reference");
+
+-- CreateIndex
+CREATE INDEX "WebhookEndpoint_orgId_idx" ON "WebhookEndpoint"("orgId");
+
+-- CreateIndex
+CREATE INDEX "WebhookDelivery_status_nextAttemptAt_idx" ON "WebhookDelivery"("status", "nextAttemptAt");
+
+-- CreateIndex
+CREATE INDEX "WebhookDelivery_paymentRef_idx" ON "WebhookDelivery"("paymentRef");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "WebhookDelivery_endpointId_event_paymentRef_key" ON "WebhookDelivery"("endpointId", "event", "paymentRef");
+
+-- AddForeignKey
+ALTER TABLE "ApiKey" ADD CONSTRAINT "ApiKey_orgId_fkey" FOREIGN KEY ("orgId") REFERENCES "Organization"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "PaymentRequest" ADD CONSTRAINT "PaymentRequest_orgId_fkey" FOREIGN KEY ("orgId") REFERENCES "Organization"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "WebhookEndpoint" ADD CONSTRAINT "WebhookEndpoint_orgId_fkey" FOREIGN KEY ("orgId") REFERENCES "Organization"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "WebhookDelivery" ADD CONSTRAINT "WebhookDelivery_orgId_fkey" FOREIGN KEY ("orgId") REFERENCES "Organization"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "WebhookDelivery" ADD CONSTRAINT "WebhookDelivery_endpointId_fkey" FOREIGN KEY ("endpointId") REFERENCES "WebhookEndpoint"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
