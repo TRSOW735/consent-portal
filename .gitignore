@@ -44,3 +44,10 @@ next-env.d.ts
 
 .env
 
+.vercel
+.env*.local
+tools/logs/
+tools/*.sql
+tools/*.log
+prisma/migrations_sqlite_backup_*/
+
