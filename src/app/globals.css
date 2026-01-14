@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+html, body { height: 100%; }
+body { margin: 0; color: rgb(241 245 249); }
+
+.app-bg {
+  background:
+    radial-gradient(900px 520px at 15% 10%, rgba(208,180,255,0.25), transparent 60%),
+    radial-gradient(900px 520px at 75% 18%, rgba(189,224,254,0.18), transparent 60%),
+    radial-gradient(900px 520px at 50% 92%, rgba(185,251,192,0.14), transparent 62%),
+    linear-gradient(180deg, #0B0F14 0%, #0B1220 60%, #0B0F14 100%);
+}
+
+.card {
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 12px 38px rgba(0,0,0,0.30);
+}
+
+/* Base button */
+.btn, .btn-primary, .btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .55rem;
+  padding: .65rem 1rem;
+  border-radius: 16px; /* <- mÃƒÂ¡s redondo */
+  font-weight: 650;
+  transition: 150ms ease;
+  user-select: none;
+  line-height: 1;
+}
+
+/* Primary */
+.btn-primary {
+  color: #0b1220;
+  background: linear-gradient(90deg, rgba(208,180,255,1), rgba(189,224,254,1), rgba(185,251,192,1));
+  box-shadow: 0 10px 30px rgba(0,0,0,0.22);
+}
+.btn-primary:hover { filter: brightness(0.98); transform: translateY(-0.5px); }
+.btn-primary:active { transform: translateY(0px); }
+
+/* Ghost */
+.btn-ghost {
+  color: rgb(226 232 240);
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+}
+.btn-ghost:hover { background: rgba(255,255,255,0.10); }
+
+.input {
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.06);
+  padding: .7rem .85rem;
+  color: rgb(241 245 249);
+  outline: none;
+}
+.input::placeholder { color: rgba(148,163,184,0.95); }
+.input:focus { box-shadow: 0 0 0 3px rgba(255,255,255,0.10); }
+
+.label { font-size: .9rem; font-weight: 650; color: rgb(203 213 225); }
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: .28rem .65rem;
+  font-size: .75rem;
+  font-weight: 650;
+  color: rgb(226 232 240);
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.06);
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  align-items: center;
+}
+.toolbar .input, .toolbar select, .toolbar button { height: 42px; }
+/* === Inputs con icono (evita solapes) === */
+.input-icon { padding-left: 2.5rem !important; }        /* para lupa */
+.select-icon { padding-left: 2.5rem !important; }       /* para embudo */
+.select-chev { padding-right: 2.3rem !important; }      /* deja espacio a la flecha nativa */
+
+/* Selects legibles en Windows (dropdown nativo) */
+select.input { color-scheme: dark; }
+select.input option { background: #0B1220; color: rgb(241 245 249); }

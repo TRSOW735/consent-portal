@@ -1,0 +1,98 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Organization {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name      String
+  recipient String
+  rpcUrl    String?
+
+  apiKeys   ApiKey[]
+  payments  PaymentRequest[]
+  webhooks   WebhookEndpoint[]
+  deliveries WebhookDelivery[]
+}
+
+model ApiKey {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  key       String   @unique
+  revokedAt DateTime?
+
+  orgId     String
+  org       Organization @relation(fields: [orgId], references: [id])
+}
+
+model PaymentRequest {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  recipient String
+  amount    String
+  memo      String?
+  reference String   @unique
+
+  status    String   @default("pending")
+  signature String?
+
+  orgId     String?
+  org       Organization? @relation(fields: [orgId], references: [id])
+}
+
+model WebhookEndpoint {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orgId     String
+  org       Organization @relation(fields: [orgId], references: [id])
+
+  url       String
+  secret    String   // MVP: stored raw. Production: store hash or encrypt.
+  events    String   // CSV, e.g. "payment.paid"
+  enabled   Boolean  @default(true)
+
+  deliveries WebhookDelivery[]
+
+  @@index([orgId])
+}
+
+model WebhookDelivery {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  orgId         String
+  org           Organization @relation(fields: [orgId], references: [id])
+
+  endpointId    String
+  endpoint      WebhookEndpoint @relation(fields: [endpointId], references: [id])
+
+  event         String
+  paymentRef    String
+  payloadJson   String
+
+  status        String   @default("pending") // pending | retrying | success | failed
+  attemptCount  Int      @default(0)
+  nextAttemptAt DateTime @default(now())
+
+  lastStatus    Int?
+  lastError     String?
+  lastResponse  String?
+
+  deliveredAt   DateTime?
+
+  @@index([status, nextAttemptAt])
+  @@index([paymentRef])
+  @@unique([endpointId, event, paymentRef])
+}
