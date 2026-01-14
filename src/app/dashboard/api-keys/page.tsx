@@ -1,3 +1,6 @@
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 import { prisma } from "@/lib/prisma";
 import { CopyField } from "@/components/CopyField";
 import { EmptyState } from "@/components/EmptyState";
@@ -12,7 +15,7 @@ export default async function ApiKeysPage() {
     <div className="space-y-6">
       <div>
         <div className="text-3xl font-semibold tracking-tight">API Keys</div>
-        <div className="text-slate-300">Para integrar tu “Stripe-like payments API”.</div>
+        <div className="text-slate-300">Para integrar tu â€œStripe-like payments APIâ€.</div>
       </div>
 
       <section className="card p-6 space-y-4">
@@ -23,7 +26,7 @@ export default async function ApiKeysPage() {
           <EmptyState title="No API key" subtitle="Crea una key con el seed (tools/seed-default-org.js)." />
         )}
         <div className="text-xs text-slate-400">
-          Pro tip: en producción no guardes keys en claro; guarda hashes + rotación + scopes.
+          Pro tip: en producciÃ³n no guardes keys en claro; guarda hashes + rotaciÃ³n + scopes.
         </div>
       </section>
 

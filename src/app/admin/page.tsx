@@ -1,3 +1,6 @@
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 import { prisma } from "@/lib/prisma";
 import { CopyField } from "@/components/CopyField";
 
@@ -17,7 +20,7 @@ export default async function AdminPage() {
       <div className="flex flex-col gap-2">
         <h1 className="text-3xl font-semibold tracking-tight">Admin</h1>
         <p className="text-slate-600 max-w-2xl">
-          Configuración del negocio (recipient) + API key para integración B2B + últimos cobros.
+          ConfiguraciÃ³n del negocio (recipient) + API key para integraciÃ³n B2B + Ãºltimos cobros.
         </p>
       </div>
 
@@ -25,9 +28,9 @@ export default async function AdminPage() {
         <div className="glass p-6 space-y-4">
           <h2 className="text-lg font-semibold">Business</h2>
           <div className="text-sm text-slate-700 space-y-1">
-            <div><b>Org:</b> {org?.name ?? "—"}</div>
-            <div className="break-all"><b>Org ID:</b> {org?.id ?? "—"}</div>
-            <div className="break-all"><b>Recipient:</b> {org?.recipient ?? "—"}</div>
+            <div><b>Org:</b> {org?.name ?? "â€”"}</div>
+            <div className="break-all"><b>Org ID:</b> {org?.id ?? "â€”"}</div>
+            <div className="break-all"><b>Recipient:</b> {org?.recipient ?? "â€”"}</div>
           </div>
         </div>
 
@@ -35,14 +38,14 @@ export default async function AdminPage() {
           <h2 className="text-lg font-semibold">API Key</h2>
           <CopyField label="x-api-key" value={key?.key ?? ""} />
           <div className="text-xs text-slate-500">
-            Recomendación: en producción, rota keys y guarda hashes (no keys en claro).
+            RecomendaciÃ³n: en producciÃ³n, rota keys y guarda hashes (no keys en claro).
           </div>
         </div>
       </section>
 
       <section className="glass p-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold">Últimos cobros</h2>
+          <h2 className="text-lg font-semibold">Ãšltimos cobros</h2>
           <span className="badge bg-white/60 border-white/70 text-slate-700">
             {payments.length} items
           </span>
@@ -72,7 +75,7 @@ export default async function AdminPage() {
                     )}
                   </td>
                   <td className="py-2 pr-3 break-all">{p.reference}</td>
-                  <td className="py-2 pr-3 break-all">{p.signature ?? "—"}</td>
+                  <td className="py-2 pr-3 break-all">{p.signature ?? "â€”"}</td>
                 </tr>
               ))}
             </tbody>
